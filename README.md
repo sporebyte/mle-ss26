@@ -14,9 +14,10 @@
 │   ├── plot_history.py   # Plot model performance  
 │   └── stats.py          # Plot input Dataset stats
 │   └── outputs/
+├── assets/
 ├── data/
 │   ├── smiles_clean.txt
-│   └── smiles_train.txt    # Dataset of ~1.27M SMILEs
+│   └── smiles_train.txt    # Training dataset of ~1.27M SMILEs
 ├── outputs/
 ├── environment.yml         # conda env configs
 └── README.md
@@ -29,9 +30,6 @@ The model utilized is a multi-layer long short-term memory (LSTM) RNN.
 The approach of this project borrows the basis of the following papers:
 
 >  ***Bidirectional Molecule Generation with Recurrent Neural Networks***; F Grisoni, M Moret, R Lingwood, and G Schneider (2020); *DOI: 10.1021/acs.jcim.9b00943*
-
->  ***Generative Recurrent Networks for De Novo Drug Design***; A Gupta, AT Müller, BJH Huisman, JA Fuchs, P Schneider, G Schneider (2018); *DOI: 10.1002/minf.201700111*
-
 
 > ***Molecular Generation with Recurrent Neural Networks (RNNs)***; J Bjerrum and R Threlfall (2017); *ArXiv abs/1705.04612*
 
@@ -79,32 +77,31 @@ The input molecules were pre-processed by using the `rdkit` python module that c
 
 ## Evaluation Metrics: Fréchet ChemNet Distance (FCD)
 
-## Extras 1: Best-of visualizations and insights
+## Extras: Visualizations and insights
+
+![image info](./assets/properties.png)
+
+![image info](./assets/functional_groups.png)
 
 ## Resources
 
-https://medium.com/geekculture/10-hyperparameters-to-keep-an-eye-on-for-your-lstm-model-and-other-tips-f0ff5b63fcd4 
+- Geeks for Geeks. "Deep Learning – Introduction to Long Short-Term Memory."  https://www.geeksforgeeks.org/deep-learning/deep-learning-introduction-to-long-short-term-memory/
+- Heidenreich, H. "Atom-in-SMILES Tokenization." https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/atom-in-smiles-tokenization/
+- Hiya31. "A Guide to LSTM Hyperparameter Tuning for Optimal Model Training." Medium, 2023. https://hiya31.medium.com/a-guide-to-lstm-hyperparameter-tuning-for-optimal-model-training-064f5c7f099d
+- "10 Hyperparameters to Keep an Eye on for Your LSTM Model and Other Tips." Medium, Geek Culture. https://medium.com/geekculture/10-hyperparameters-to-keep-an-eye-on-for-your-lstm-model-and-other-tips-f0ff5b63fcd4
+- PyTorch. "torch.nn.LSTM — PyTorch 2.12 Documentation." https://docs.pytorch.org/docs/2.12/generated/torch.nn.LSTM.html
+- StatQuest with Josh Starmer. "Long Short-Term Memory (LSTM), Clearly Explained" [Video]. YouTube. https://www.youtube.com/watch?v=6niqTuYFZLQ
+- ***Bidirectional Molecule Generation with Recurrent Neural Networks***; F Grisoni, M Moret, R Lingwood, and G Schneider (2020); *DOI: 10.1021/acs.jcim.9b00943*
+- ***Molecular Generation with Recurrent Neural Networks (RNNs)***; J Bjerrum and R Threlfall (2017); *ArXiv abs/1705.04612*
 
-https://hiya31.medium.com/a-guide-to-lstm-hyperparameter-tuning-for-optimal-model-training-064f5c7f099d
-
-https://docs.pytorch.org/docs/2.12/generated/torch.nn.LSTM.html
-
-https://www.youtube.com/watch?v=6niqTuYFZLQ
-
-https://www.geeksforgeeks.org/deep-learning/deep-learning-introduction-to-long-short-term-memory/ 
-
-https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/atom-in-smiles-tokenization/ 
-
-https://docs.pytorch.org/docs/2.12/generated/torch.nn.LSTM.html
 
 ## AI-use disclaimer
 
-Claude AI
-
-Opus 4.7 
+Claude AI: Opus 4.7 
 
 Uses:
 - code proofreading and bug fixes
 - theoretical understanding of ML
 - suggestions for project structure
 - pseudocode generation 
+- report formatting
