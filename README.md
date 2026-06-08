@@ -10,7 +10,8 @@
 │   ├── dataset.py      
 │   ├── model.py       
 │   ├── train.py        
-│   ├── generate.py     
+│   ├── generate.py
+│   ├── plot_history.py     
 │   └── stats.py        
 │   └── outputs/
 ├── data/
