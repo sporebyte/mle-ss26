@@ -1,5 +1,11 @@
 # SMILES generation with a LSTM RNN
 
+*Hochschule Campus Wien, Machine Learning Assignment*
+
+*Summer Semester 2026*
+
+**Sonja V**
+
 ## Project Layout
 
 ```
