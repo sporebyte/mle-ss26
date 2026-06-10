@@ -4,6 +4,22 @@
 
 **Sonja Vukotic**
 
+> **Final result**: FCD = 0.3891, Validity = 1.0, Uniqueness = 1.0, Novelty = 0.9983 (T = 1.0)
+
+---
+
+## Summary
+
+A 2-layer LSTM language model with learned token embeddings was trained on 
+1.27M canonicalized SMILES from ChEMBL. Atom-wise tokenization 
+(Schwaller et al. regex) yields a 99-token vocabulary; the model has ~3.48M 
+parameters and was trained for 30 epochs on a single Quadro RTX 6000 GPU 
+(CLIP HPC). Generation uses temperature-based autoregressive sampling 
+followed by RDKit validity filtering and canonical deduplication. The final 
+submission (T = 1.0) achieves FCD = 0.3891 with validity = 1.0, uniqueness 
+= 1.0, and novelty = 0.9983 — well below the FCD threshold of 0.8 for full 
+project execution marks.
+
 ## Project Layout
 
 ```bash
@@ -85,9 +101,9 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 ### LSTM Architecture and Parameters
 
 
-|  Metric                       | Description                | Reasoning                           | 
+|  Setting                       | Description                | Reasoning                           | 
 |-------------------------|----------------------------|-------------------------------------|
-| Architecture            | 2-layer LSTM, hidden = 512 | Literature: commonly 1 - 3 Layers.                   |           
+| Architecture            | 2-layer LSTM; hidden=512; embedding dim=128  | Literature: commonly 1 - 3 Layers.                   |           
 | Embedding               | Learned Embedding          | Learned embeddings potentially let the model discover and encode chemical similarity.  |           
 | Vocabulary/tokenization | 99 atom-wise tokens        | Atom-in-SMILES replaces generic SMILES tokens with environment-aware atomic tokens, reducing token degeneration and improving chemical translation accuracy. [Source](https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/atom-in-smiles-tokenization/)                         |          
 | Training Data           | 1,27M provided SMILES      | Default Dataset Received in Course           |           
@@ -95,7 +111,9 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 | Batch size              | 256                        | Mini-batch gradient descent: A middle ground for available GPU utilization.                                 |           
 | Learning rate           | 0.001                      | *Kingma and Ba*, **2014**                    |         
 | Dropout rate           | 0.2                    | Literature: commonly 0.1 - 0.5.                 |  
-| Nr. of Parameters | ~3.48M | Output from `training.py` |
+| Nr. of Parameters | ~3.48M | Output from `train.py` |
+
+#### Loss curve
 
 ![image info](./assets/loss_curve.png)
 
@@ -111,6 +129,8 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 
 
 ## Evaluation Metrics: Fréchet ChemNet Distance (FCD)
+
+The Fréchet ChemNet Distance (FCD) measures how similar the distribution of generated molecules is to a reference distribution, using a pretrained ChemNet model.
 
 Upon generating 10,000 new molecules, the `/outputs/submission.txt` dataset was evaluated in the `evaluation_notebook.ipynb` and had the following results:
 
@@ -134,6 +154,57 @@ Lipinski's rule of five, also known as Pfizer's rule of five or simply the rule 
 For this purpose the python package `rdkit.Chem` contains a `Lipinski` module which is imported into `src/analyze.py` to output the properties of the generated molecules and compare them to the training set (normalized values).
 
 ![image info](./assets/properties.png)
+
+## Limitations and future work
+
+A working baseline does not exhaust the design space; several extensions would 
+be natural with more time.
+
+**Hyperparameter optimization.** Hyperparameters in this work were chosen from 
+the conventional ranges in the SMILES-generation literature (Segler 2018, 
+Grisoni 2020, Bjerrum & Threlfall 2017). A systematic search via Bayesian 
+optimization (e.g. Optuna's TPE sampler) over learning rate, hidden size, layer 
+count, embedding dimension, and dropout would likely yield modest improvements. 
+Each trial requires a full training run (~3 hours on Quadro RTX 6000), so even 
+a modest 20-trial sweep is on the order of 60 GPU-hours and was out of scope for 
+the project window.
+
+**Randomized SMILES augmentation.** The same molecule has many valid 
+non-canonical SMILES representations depending on the traversal starting atom. 
+Training on multiple non-canonical forms per molecule — as in Bjerrum & 
+Threlfall 2017 — is reported to improve FCD by exposing the model to a wider 
+range of syntactic paths to the same chemistry. This would require regenerating 
+the training set with `Chem.MolToRandomSmiles` and retraining from scratch.
+
+**Bidirectional generation (BIMODAL).** Grisoni et al. 2020 argue that the 
+left-to-right reading direction is arbitrary for SMILES, which has no natural 
+beginning or end. Their bidirectional architecture generates outward from a 
+randomly selected starting atom in both directions simultaneously and reports 
+modest FCD improvements over the unidirectional baseline. We did not pursue 
+this both because the assignment specifies an RNN (which a unidirectional LSTM 
+fully satisfies) and because the architectural change is substantial.
+
+**Reinforcement-learning fine-tuning.** Methods like REINVENT (Olivecrona et al. 
+2017) fine-tune a pretrained generator against a property objective using 
+policy-gradient methods. This shifts from distribution-matching toward targeted 
+generation — useful when the goal is to produce molecules with specific 
+properties (drug-likeness, predicted binding affinity, etc.) rather than 
+imitating a training distribution. The current project's metric (FCD) is 
+distribution-based, so RL fine-tuning would be a different problem rather than 
+an improvement to this one.
+
+**Evaluation novelty artifact.** As noted in the Evaluation section, two of the 
+three temperature runs report novelty = 0, almost certainly due to a 
+canonicalization mismatch in the evaluation comparison. A correct evaluation 
+would canonicalize both sides before string comparison. We did not modify the 
+provided evaluation notebook, as the T = 1.0 result is unaffected and serves 
+as the final submission.
+
+**Stricter post-processing.** Beyond validity and uniqueness, generated 
+molecules could be filtered for drug-likeness (QED threshold), synthetic 
+accessibility, removal of pan-assay interference compounds (PAINS), or 
+unusual atom-type constraints. The provided FCD metric does not reward this, 
+but it would be relevant for any downstream use of the molecules.
 
 ## Resources
 
