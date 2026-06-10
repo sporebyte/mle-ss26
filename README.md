@@ -1,8 +1,6 @@
 # SMILES generation with a LSTM RNN
 
-*Hochschule Campus Wien, Machine Learning Assignment*
-
-*Summer Semester 2026*
+*Hochschule Campus Wien, Machine Learning Assignment, SS26*
 
 **Sonja V**
 
@@ -84,6 +82,12 @@ The input molecules were pre-processed by using the `rdkit` python module that c
 
 ## Evaluation Metrics: Fréchet ChemNet Distance (FCD)
 
+FCD: 0.38912426454143656
+
+Validity: 1.0
+Uniqueness: 1.0
+Novelty: 0.9668
+
 ## Extras: Visualizations and insights
 
 ![image info](./assets/properties.png)
@@ -100,11 +104,12 @@ The input molecules were pre-processed by using the `rdkit` python module that c
 - StatQuest with Josh Starmer. "Long Short-Term Memory (LSTM), Clearly Explained" [Video]. YouTube. https://www.youtube.com/watch?v=6niqTuYFZLQ
 - ***Bidirectional Molecule Generation with Recurrent Neural Networks***; F Grisoni, M Moret, R Lingwood, and G Schneider (2020); *DOI: 10.1021/acs.jcim.9b00943*
 - ***Molecular Generation with Recurrent Neural Networks (RNNs)***; J Bjerrum and R Threlfall (2017); *ArXiv abs/1705.04612*
+- ***A method for stochastic optimization.*** Kingma, D. P., & Ba, J. (2014); *arXiv:1412.6980.*
 
 
 ## AI-use disclaimer
 
-Claude AI: Opus 4.7 
+Claude: Opus 4.7 
 
 Uses:
 - code proofreading and bug fixes
@@ -112,3 +117,5 @@ Uses:
 - suggestions for project structure
 - pseudocode generation 
 - report formatting
+
+**All design decisions and final code are reviewed and adapted by the author.**
