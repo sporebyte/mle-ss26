@@ -82,7 +82,7 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 ### LSTM Architecture and Parameters
 
 
-|  Parameter                       | Description                | Reasoning                           | 
+|  Metric                       | Description                | Reasoning                           | 
 |-------------------------|----------------------------|-------------------------------------|
 | Architecture            | 2-layer LSTM, hidden = 512 | Literature: commonly 1 - 3 Layers.                   |           
 | Embedding               | Learned Embedding          | Learned embeddings potentially let the model discover and encode chemical similarity.  |           
@@ -92,6 +92,7 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 | Batch size              | 256                        | Mini-batch gradient descent: A middle ground for available GPU utilization.                                 |           
 | Learning rate           | 0.001                      | *Kingma and Ba*, **2014**                    |         
 | Dropout rate           | 0.2                    | Literature: commonly 0.1 - 0.5.                 |  
+| Nr. of Parameters | ~3.48M | Output from `training.py` |
 
 ![image info](./assets/loss_curve.png)
 

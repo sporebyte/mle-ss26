@@ -127,4 +127,3 @@ dependencies:
       - tqdm==4.67.3
       - transformers==5.9.0
       - typer==0.25.1
-prefix: /Users/sonja.vukotic/miniconda3/envs/mle
