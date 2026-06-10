@@ -1,8 +1,8 @@
-# SMILES generation with a LSTM RNN
+# SMILES generation with a LSTM-RNN
 
 *Hochschule Campus Wien, Machine Learning Assignment, SS26*
 
-**Sonja V**
+**Sonja Vukotic**
 
 ## Project Layout
 
@@ -83,8 +83,7 @@ The input molecules were pre-processed by using the `rdkit` python module that c
 
 As all molecules from the dataset were cannonical and had no duplicates, the output dataset was the same one as the dataset received.
 
-### LSTM Training
-
+### LSTM Architecture and Parameters
 
 
 |  Parameter                       | Description                | Reasoning                           | 
@@ -118,6 +117,10 @@ Upon generating 10,000 new molecules, the `/outputs/submission.txt` dataset was 
 
 ### Lipinski properties
 
+Lipinski's rule of five, also known as Pfizer's rule of five or simply the rule of five (RO5), is a rule of thumb to evaluate druglikeness or determine if a chemical compound with a certain pharmacological or biological activity has chemical properties and physical properties that would likely make it an orally active drug in humans. The rule was formulated by Christopher A. Lipinski in 1997, based on the observation that most orally administered drugs are relatively small and moderately lipophilic molecules. [From Wikipedia]
+
+For this purpose the python package `rdkit.Chem` contains a `Lipinski` module which is imported into `src/analyze.py` to output the properties of the generated molecules and compare them to the training set (normalized values).
+
 ![image info](./assets/properties.png)
 
 ## Resources
@@ -128,7 +131,9 @@ Upon generating 10,000 new molecules, the `/outputs/submission.txt` dataset was 
 - "10 Hyperparameters to Keep an Eye on for Your LSTM Model and Other Tips." Medium, Geek Culture. https://medium.com/geekculture/10-hyperparameters-to-keep-an-eye-on-for-your-lstm-model-and-other-tips-f0ff5b63fcd4
 - PyTorch. "torch.nn.LSTM — PyTorch 2.12 Documentation." https://docs.pytorch.org/docs/2.12/generated/torch.nn.LSTM.html
 - StatQuest with Josh Starmer. "Long Short-Term Memory (LSTM), Clearly Explained" [Video]. YouTube. https://www.youtube.com/watch?v=6niqTuYFZLQ
+- "RNN-based molecular property prediction" https://projects.volkamerlab.org/teachopencadd/talktorials/T034_recurrent_neural_networks.html 
 - ***Bidirectional Molecule Generation with Recurrent Neural Networks***; F Grisoni, M Moret, R Lingwood, and G Schneider (2020); *DOI: 10.1021/acs.jcim.9b00943*
+- ***Molecular Transformer: A Model for Uncertainty-Calibrated Chemical Reaction Prediction***; P Schwaller, T Laino, T Gaudin, P Bolgar, C A. Hunter, C Bekas, and A A. Lee (2019); *DOI: 10.1021/acscentsci.9b00576* 
 - ***Molecular Generation with Recurrent Neural Networks (RNNs)***; J Bjerrum and R Threlfall (2017); *ArXiv abs/1705.04612*
 - ***A method for stochastic optimization.*** Kingma, D. P., & Ba, J. (2014); *arXiv:1412.6980.*
 
