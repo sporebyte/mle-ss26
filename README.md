@@ -6,7 +6,7 @@
 
 ## Project Layout
 
-```
+```bash
 .
 ├── src/
 │   ├── preprocess.py     # Canonicalize and Deduplicate Dataset
