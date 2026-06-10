@@ -93,6 +93,7 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 | Learning rate           | 0.001                      | *Kingma and Ba*, **2014**                    |         
 | Dropout rate           | 0.2                    | Literature: commonly 0.1 - 0.5.                 |  
 
+![image info](./assets/loss_curve.png)
 
 ## Evaluation Metrics: Fréchet ChemNet Distance (FCD)
 
