@@ -10,7 +10,7 @@
 
 ## Summary
 
-A 2-layer LSTM language model with learned token embeddings was trained on 1.27M canonicalized SMILES from ChEMBL. Atom-wise tokenization yields a 99-token vocabulary; the model has ~3.48M parameters and was trained for 30 epochs. Generation uses temperature-based autoregressive sampling followed by RDKit validity filtering and canonical deduplication. The final submission (T = 1.0) achieves FCD = 0.3891 with validity = 1.0, uniqueness = 1.0, and novelty = 0.9983.
+*A 2-layer LSTM language model with learned token embeddings was trained on 1.27M canonicalized SMILES from ChEMBL. Atom-wise tokenization yields a 99-token vocabulary; the model has ~3.48M parameters and was trained for 30 epochs. Generation uses temperature-based autoregressive sampling followed by RDKit validity filtering and canonical deduplication. The final submission (T = 1.0) achieves FCD = 0.3891 with validity = 1.0, uniqueness = 1.0, and novelty = 0.9983.*
 
 ## Project Layout
 
@@ -59,12 +59,9 @@ python src/analyze.py       # outputs/properties.png, outputs/functional_groups.
 
 The model utilized is a multi-layer long short-term memory (LSTM) RNN. 
 
-The approach of this project borrows the basis of the following papers:
+**Why LSTM**: SMILES strings contain long-range dependencies that vanilla RNNs cannot model (ring closure digits and matched parentheses). LSTMs solve this via a cell state with additive updates and gated information flow, allowing gradients to propagate. A transformer would also work but would add complexity.
 
->  ***Bidirectional Molecule Generation with Recurrent Neural Networks***; F Grisoni, M Moret, R Lingwood, and G Schneider (2020); *DOI: 10.1021/acs.jcim.9b00943*
-
-> ***Molecular Generation with Recurrent Neural Networks (RNNs)***; J Bjerrum and R Threlfall (2017); *ArXiv abs/1705.04612*
-
+**Why 2 layers**: Two stacked LSTM layers are deeper than the simplest baseline (the first layer can potentially encode local syntax, the second can encode larger structural patterns) but shallow enough to train without overfitting concerns and data size issues. 
 
 ### Theoretical Background
 
@@ -111,14 +108,15 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 
 ## Molecule generation
 
-    The specific error types you see are the common SMILES failure modes:
+Generation uses temperature-based sampling. The trained LSTM outputs logits over the vocabulary, which are divided by the temperature parameter T and converted to probabilities via softmax. One token is sampled, fed back as input, and the process repeats until `<EOS>` is emitted (or a maximum length is reached). 
 
-    "Can't kekulize mol" — the model drew aromatic bonds somewhere that can't form a valid aromatic system (e.g., a 5-membered ring with the wrong number of electrons). The most common failure type.
-    "unclosed ring" — opened a ring with a digit (e.g. c1) but never closed it. The model ran out of tokens or took a wrong turn.
-    "Explicit valence greater than permitted" — e.g. carbon with 5 bonds, nitrogen with 4 where it shouldn't. The model violated chemistry rules.
-    "ring closure duplicates bond" — used the same ring closure digit twice in a conflicting way.
+Three post-processing steps are applied to every generated string:
 
+1. **Validity filter**: `RDKit` attempts to parse the SMILES
+2. **Canonicalization**: valid molecules are converted to canonical SMILES via `Chem.MolToSmiles`
+3. **Uniqueness filter**: duplicates in canonical form are removed
 
+Sampling continues until exactly 10,000 valid unique canonical molecules are collected. The raw validity rate (fraction of attempts that parse) is reported separately for each temperature.
 
 ## Evaluation Metrics: Fréchet ChemNet Distance (FCD)
 
@@ -151,13 +149,13 @@ For this purpose the python package `rdkit.Chem` contains a `Lipinski` module wh
 
 A few additional approaches could be explored to improve the pipeline:
 
-- **Hyperparameter optimization.**: A search via Bayesian optimization of hyperparameters could improvements but requires additional time
+- **Hyperparameter optimization**: A search via Bayesian optimization of hyperparameters could improvements but requires additional time
 
-- **Bidirectional generation (BIMODAL).** Grisoni et al. 2020 argue that the  left-to-right reading direction is arbitrary for SMILES, which has no natural  beginning or end. Their bidirectional architecture generates outward from a  randomly selected starting atom in both directions simultaneously 
+- **Bidirectional generation** Grisoni et al. 2020 argue that the  left-to-right reading direction is arbitrary for SMILES, which has no natural  beginning or end. Their bidirectional architecture generates outward from a  randomly selected starting atom in both directions simultaneously 
 
-- **Evaluation novelty artifact.** As noted in the Evaluation section, two of the  three temperature runs report novelty = 0, which should be explored but is not included in this repo
+- **Evaluation novelty artifact** As noted in the Evaluation section, two of the  three temperature runs report novelty = 0, which should be explored but is not included in this repo
 
-- **Stricter post-processing.**: Beyond validity and uniqueness, generated  molecules could be filtered for drug-likeness, synthetic accessibility or 
+- **Stricter post-processing**: Beyond validity and uniqueness, generated  molecules could be filtered for drug-likeness, synthetic accessibility or 
 unusual atom-types
 
 ## Resources
