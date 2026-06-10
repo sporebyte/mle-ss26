@@ -1,2 +1,3 @@
 /.vscode/
-/data/
+/data/smiles_clean.txt
+/data/smiles_train.txt
