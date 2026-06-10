@@ -88,7 +88,7 @@ Validity: 1.0
 Uniqueness: 1.0
 Novelty: 0.9668
 
-## Extras: Visualizations and insights
+## Visualizations and insights
 
 ![image info](./assets/raw_stats.png)
 
