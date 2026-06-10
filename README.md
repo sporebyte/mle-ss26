@@ -90,6 +90,8 @@ Novelty: 0.9668
 
 ## Extras: Visualizations and insights
 
+![image info](./assets/raw_stats.png)
+
 ![image info](./assets/properties.png)
 
 ![image info](./assets/functional_groups.png)
