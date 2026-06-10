@@ -2,7 +2,7 @@
 
 *Hochschule Campus Wien, Machine Learning Assignment, SS26*
 
-https://github.com/sporebyte/mle 
+https://github.com/sporebyte/mle-ss26
 
 **Sonja Vukotic**
 
