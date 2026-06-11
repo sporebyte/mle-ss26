@@ -12,7 +12,7 @@ https://github.com/sporebyte/mle-ss26
 
 ## Summary
 
-*A 2-layer LSTM language model with learned token embeddings was trained on 1.27M canonicalized SMILES from ChEMBL. Atom-wise tokenization yields a 99-token vocabulary; the model has ~3.48M parameters and was trained for 30 epochs. Generation uses temperature-based autoregressive sampling followed by RDKit validity filtering and canonical deduplication. The final submission (T = 1.0) achieves FCD = 0.3891 with validity = 1.0, uniqueness = 1.0, and novelty = 0.9983.*
+*A 2-layer LSTM language model with learned token embeddings was trained on 1.27M canonicalized SMILES from ChEMBL. Atom-wise tokenization yields a 100-token vocabulary; the model has ~3.48M parameters and was trained for 30 epochs. Generation uses temperature-based autoregressive sampling followed by RDKit validity filtering and canonical deduplication. The final submission (T = 1.0) achieves FCD = 0.3891 with validity = 1.0, uniqueness = 1.0, and novelty = 0.9983.*
 
 ## Project Layout
 
@@ -103,13 +103,38 @@ PyTorch ML tranining module was used due to its easier installation compared to 
 |-------------------------|----------------------------|-------------------------------------|
 | Architecture            | 2-layer LSTM; hidden=512; embedding dim=128  | Literature: commonly 1 - 3 Layers.                   |           
 | Embedding               | Learned Embedding          | Learned embeddings potentially let the model discover and encode chemical similarity.  |           
-| Vocabulary/tokenization | 99 atom-wise tokens        | Atom-in-SMILES replaces generic SMILES tokens with environment-aware atomic tokens, reducing token degeneration and improving chemical translation accuracy. [Source](https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/atom-in-smiles-tokenization/)                         |          
+| Vocabulary/tokenization | 100 atom-wise tokens        | Atom-in-SMILES replaces generic SMILES tokens with environment-aware atomic tokens, reducing token degeneration and improving chemical translation accuracy. [Source](https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/atom-in-smiles-tokenization/)                         |          
 | Training Data           | 1,27M provided SMILES      | Default Dataset Received in Course           |           
 | Epochs                  | 30                         | Literature: 10 - 50 epochs, picked the middle.                                 |           
 | Batch size              | 256                        | Mini-batch gradient descent: A middle ground for available GPU utilization.                                 |           
 | Learning rate           | 0.001                      | *Kingma and Ba*, **2014**                    |         
 | Dropout rate           | 0.2                    | Literature: commonly 0.1 - 0.5.                 |  
 | Nr. of Parameters | ~3.48M | Output from `train.py` |
+
+
+### Vocabulary
+
+```python
+SMILES_REGEX = re.compile(
+    r"(\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|"
+    r"\(|\)|\.|=|#|-|\+|\\|\/|:|~|@|\?|>>?|\*|\$|%[0-9]{2}|[0-9])"
+)
+```
+
+The tokenizer produced 100 tokens from 1.27M training SMILES:
+
+| Category | Count | Examples |
+|---|---|---|
+| Special tokens | 3 | `<PAD>`, `<SOS>`, `<EOS>` |
+| Aliphatic atoms | 10 | `C`, `N`, `O`, `S`, `Cl`, `Br`, `F`, `I`, `B`, `P` |
+| Aromatic atoms | 6 | `c`, `n`, `o`, `s`, `b`, `p` |
+| Bracketed atoms (charges, stereo, isotopes) | 65 | `[nH]`, `[N+]`, `[O-]`, `[Si]`, `[Se]`, `[C@H]` |
+| Structural punctuation | 5 | `(`, `)`, `=`, `#`, `-` |
+| Single-digit ring closures | 9 | `1`, `2`, ... `9` |
+| Two-digit ring closures | 2 | `%10`, `%11` |
+| **Total** | **100** |  |
+
+A larger vocabulary than character-level reflects atom-wise tokenization treating units like `Cl`, `[nH]`, `[N+]` as single tokens.
 
 #### Loss curve
 
