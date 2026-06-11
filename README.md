@@ -96,6 +96,8 @@ As all molecules from the dataset were cannonical and had no duplicates, the out
 
 ### LSTM Architecture and Parameters
 
+PyTorch ML tranining module was used due to its easier installation compared to Tensorflow on macOS.
+
 
 |  Setting                       | Description                | Reasoning                           | 
 |-------------------------|----------------------------|-------------------------------------|
